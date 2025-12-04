@@ -1,9 +1,8 @@
-const db = require('../database/models');
-const Clinic = db.Clinic;
+const Clinic = require('../database/models');
+
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const Sequelize = db.Sequelize;
-const Op = Sequelize.Op;
+const { Op } = require('sequelize');
 const jwt = require('jsonwebtoken');
 const logger = require('../config/log');
 const BadRequestError = require('../utils/error/BadRequestError');

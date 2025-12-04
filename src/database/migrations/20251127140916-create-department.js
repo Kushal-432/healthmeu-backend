@@ -12,12 +12,6 @@ module.exports = {
       clinic_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'clinics', // Make sure your clinics table exists
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       department_name: {
         type: Sequelize.STRING,

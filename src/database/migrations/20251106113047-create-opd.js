@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Opds', {
+    await queryInterface.createTable('opds', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,14 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       clinic_id: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Clinics', // Table name in database
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       ap_id: {
         type: Sequelize.STRING,
@@ -141,6 +135,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Opds');
+    await queryInterface.dropTable('opds');
   },
 };

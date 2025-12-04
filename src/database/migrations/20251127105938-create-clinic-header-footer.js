@@ -11,12 +11,6 @@ module.exports = {
       clinic_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Clinics',
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       header_image: {
         type: Sequelize.STRING,

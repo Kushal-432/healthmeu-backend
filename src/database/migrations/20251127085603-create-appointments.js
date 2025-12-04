@@ -13,12 +13,6 @@ module.exports = {
       clinic_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Clinics',
-          key: 'id',
-        },
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
       },
 
       doctor_id: {

@@ -10,14 +10,8 @@ module.exports = {
         allowNull: false,
       },
       clinic_id: {
-        type: Sequelize.BIGINT.UNSIGNED,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: 'Clinics', // Table name in database
-          key: 'id',
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE',
       },
       doctor_name: {
         type: Sequelize.STRING,
