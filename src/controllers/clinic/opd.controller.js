@@ -80,41 +80,54 @@ exports.updateOPD = [
     try {
       const { id } = req.params;
       const clinic_id = req.user.id;
+
+      // 1. Check OPD exists
       const existing = await opdService.getOPDById(id, clinic_id);
       if (!existing) {
-        if (req.file) fs.unlinkSync(req.file.path);
+        if (req.file) fs.unlinkSync(req.file.path); // remove unused uploaded file
         return errorResponse(res, null, 'OPD not found', 404);
       }
 
-      const { error } = opdSchema.validate(req.body, { allowUnknown: true });
-      if (error) {
-        if (req.file) fs.unlinkSync(req.file.path);
-        return errorResponse(res, error, error.details[0].message, 400);
-      }
-
+      // 2. Handle profile image
       let profileImgUrl = existing.profile_img;
 
       if (req.file) {
         try {
+          // delete old if exists
           if (existing.profile_img) {
-            const oldFile = path.join(
+            const oldFilePath = path.join(
               process.cwd(),
               'public',
               existing.profile_img.replace(`${getBaseUrl(req)}/`, '')
             );
-            if (fs.existsSync(oldFile)) fs.unlinkSync(oldFile);
+            if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
           }
         } catch (err) {
-          console.error('Old profile image delete error:', err);
+          console.error('Error deleting old profile image:', err);
         }
+
+        // set new file URL
         profileImgUrl = `${getBaseUrl(req)}/uploads/opd/${req.file.filename}`;
       }
 
-      const updateData = { ...req.body, profile_img: profileImgUrl };
+      // 3. Build update data with only passed fields
+      const updateData = {};
 
+      Object.keys(req.body).forEach((key) => {
+        if (req.body[key] !== undefined && req.body[key] !== null && req.body[key] !== '') {
+          updateData[key] = req.body[key];
+        }
+      });
+
+      // include new image (or old image)
+      updateData.profile_img = profileImgUrl;
+
+      // 4. Update
       const updated = await opdService.updateOPD(id, clinic_id, updateData);
+
       return successResponse(res, updated, 'OPD updated successfully', 200);
     } catch (err) {
+      console.error('Update OPD Error:', err);
       return errorResponse(res, err, 'Error updating OPD', 500);
     }
   },

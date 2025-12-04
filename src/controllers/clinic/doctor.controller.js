@@ -81,42 +81,40 @@ exports.getDoctorById = async (req, res) => {
 // -------------------------------------------------------
 exports.updateDoctor = [
   uploadFile('doctor', 'signature'),
+
   async (req, res) => {
     try {
       const { id } = req.params;
       const clinic_id = req.user.id;
 
-      // Check if doctor exists
+      // Check doctor
       const existing = await doctorService.getDoctorById(id, clinic_id);
       if (!existing) {
         return errorResponse(res, null, 'Doctor not found', 404);
       }
 
-      // Validate input
-      const { error } = doctorValidator.validate(req.body, { allowUnknown: true });
-      if (error) {
-        return errorResponse(res, error, error.details[0].message, 400);
-      }
+      // Prepare updateData only with passed fields
+      let updateData = {};
 
-      // Process signature file
-      let fileUrl = existing.signature;
+      // Add only fields that exist in req.body
+      Object.keys(req.body).forEach((key) => {
+        if (req.body[key] !== undefined && req.body[key] !== '') {
+          updateData[key] = req.body[key];
+        }
+      });
 
+      // ---- Handle signature file ----
       if (req.file) {
-        // delete old signature
+        // Delete old signature
         if (existing.signature) {
           const oldPath = `.${new URL(existing.signature).pathname}`;
           if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
         }
 
-        // new file URL
+        // Save new file URL
         const baseUrl = `${req.protocol}://${req.get('host')}`;
-        fileUrl = `${baseUrl}/uploads/doctor/${req.file.filename}`;
+        updateData.signature = `${baseUrl}/uploads/doctor/${req.file.filename}`;
       }
-
-      const updateData = {
-        ...req.body,
-        signature: fileUrl,
-      };
 
       const updated = await doctorService.updateDoctor(id, clinic_id, updateData);
 
