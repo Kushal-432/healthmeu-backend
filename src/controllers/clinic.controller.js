@@ -17,9 +17,9 @@ const registerClinic = async (req, res) => {
  * ✅ Login Clinic
  */
 const loginClinic = async (req, res) => {
-  const data = await clinicService.loginClinic(req.body);
-  return successResponse(res, data, 'Clinic logged in successfully', 200);
   try {
+    const data = await clinicService.loginClinic(req.body);
+    return successResponse(res, data, 'Clinic logged in successfully', 200);
   } catch (err) {
     return errorResponse(res, err, err.message || 'Clinic login failed', 400);
   }
