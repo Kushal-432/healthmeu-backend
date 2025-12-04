@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       scopes: {
         withPassword: {
-          attributes: {},
+          attributes: { include: ['password'] },
         },
       },
     }

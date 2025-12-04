@@ -1,4 +1,4 @@
-const Clinic = require('../database/models');
+const { Clinic } = require('../database/models');
 
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
